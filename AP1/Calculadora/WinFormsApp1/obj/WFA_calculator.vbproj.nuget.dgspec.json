@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "B:\\source\\repos\\Inf_Indust\\AP1\\WinFormsApp1\\WFA_calculator.vbproj": {}
+    "B:\\source\\repos\\Inf_Indust\\AP1\\Calculadora\\WinFormsApp1\\WFA_calculator.vbproj": {}
   },
   "projects": {
-    "B:\\source\\repos\\Inf_Indust\\AP1\\WinFormsApp1\\WFA_calculator.vbproj": {
+    "B:\\source\\repos\\Inf_Indust\\AP1\\Calculadora\\WinFormsApp1\\WFA_calculator.vbproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "B:\\source\\repos\\Inf_Indust\\AP1\\WinFormsApp1\\WFA_calculator.vbproj",
+        "projectUniqueName": "B:\\source\\repos\\Inf_Indust\\AP1\\Calculadora\\WinFormsApp1\\WFA_calculator.vbproj",
         "projectName": "WFA_calculator",
-        "projectPath": "B:\\source\\repos\\Inf_Indust\\AP1\\WinFormsApp1\\WFA_calculator.vbproj",
+        "projectPath": "B:\\source\\repos\\Inf_Indust\\AP1\\Calculadora\\WinFormsApp1\\WFA_calculator.vbproj",
         "packagesPath": "C:\\Users\\fabio\\.nuget\\packages\\",
-        "outputPath": "B:\\source\\repos\\Inf_Indust\\AP1\\WinFormsApp1\\obj\\",
+        "outputPath": "B:\\source\\repos\\Inf_Indust\\AP1\\Calculadora\\WinFormsApp1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\fabio\\AppData\\Roaming\\NuGet\\NuGet.Config",

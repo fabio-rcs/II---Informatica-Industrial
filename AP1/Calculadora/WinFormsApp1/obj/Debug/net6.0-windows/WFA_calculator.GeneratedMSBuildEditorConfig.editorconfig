@@ -14,4 +14,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = WFA_calculator
-build_property.ProjectDir = B:\source\repos\Inf_Indust\AP1\WinFormsApp1\
+build_property.ProjectDir = B:\source\repos\Inf_Indust\AP1\Calculadora\WinFormsApp1\
