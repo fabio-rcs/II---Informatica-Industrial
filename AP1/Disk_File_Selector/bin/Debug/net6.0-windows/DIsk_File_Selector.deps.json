@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "DIsk_File_Selector/1.0.0": {
+        "runtime": {
+          "DIsk_File_Selector.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DIsk_File_Selector/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
