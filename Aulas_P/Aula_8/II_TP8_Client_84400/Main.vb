@@ -1,13 +1,21 @@
 ﻿Imports System.IO.Ports
+Imports System.Net
+Imports System.Net.Sockets
 Imports System.Runtime.InteropServices
 Imports System.Text
+Imports System.Web
 
+Public Class Main
+    ' The IP address of the server
+    ReadOnly ip_address As IPAddress = IPAddress.Parse("192.168.1.69")
 
-Public Class Form1
-    ReadOnly fs As New FaconSvr.FaconServer
-    ReadOnly CSG As String = "Channel0.Station0.Group0"
-    Dim fs_is_connected As Boolean
+    ' A client object will request connection requirement
+    Dim client As New Sockets.TcpClient
 
+    ' Connection helper variable
+    Dim first_time As Boolean
+
+    ' Working variables
     Dim level_start_y As Integer
     Dim level_y As Integer
     Dim level_bottom_y As Integer
@@ -21,11 +29,17 @@ Public Class Form1
     Dim Y1 As Integer
     Dim Y2 As Integer
 
+    Dim Y0_in As Integer
+    Dim Y1_in As Integer
+    Dim Y2_in As Integer
+
     Dim level As Integer
 
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        Me.Text = "Reservoir Control"
+    Private Sub Main_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        Me.Text = "Reservoir Control - Client"
+        Me.Icon = New Icon("ua-favicon.ico") 'Icon of the window in the top left
 
         ' Configure the send and receive Timers
         TimerReceive.Interval = 100
@@ -40,73 +54,90 @@ Public Class Form1
         StatusStripLabelAutoMode.Text = "Automatic Mode is Disabled"
         StatusStripLabelWarnings.Text = " "
         SentStripStatusLabel.Text = " "
-
+        ToolStripStatusCompare.Text = ""
+        txtbxLevel.ReadOnly = True
         ' Call the routine to disconnect (initial status should be disconnected) and update GUI
         Disconnect()
         UpdateButtonImages()
     End Sub
 
-    Private Sub PortConfigurationToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PortConfigurationToolStripMenuItem.Click
-        ' Dim form1 to highlight formPortConfig
-        Me.Opacity = 0.5
-        ' Show in center of parent form
-        PortConfiguration.StartPosition = FormStartPosition.CenterParent
-        ' Show dialog blocks from doing anything in parent form until is closed
-        PortConfiguration.ShowDialog()
-        ' Return opacity to normal after closing
-        Me.Opacity = 1
-
-        If ModulePortParameters.cfg_is_valid Then
-            ' FaconSrv connection
-            fs.OpenProject(ModulePortParameters.faconsrv_path)
-        End If
-    End Sub
 
     Private Sub OpenPortToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenPortToolStripMenuItem.Click
-        ' Allow to open port only if config is valid
-        If ModulePortParameters.cfg_is_valid Then
+        ' If it's the first click (not connected yet)
+        If first_time Then
+            ' Try connecting
+            Try
+                client.Connect(ip_address, 80)
+                first_time = False
+                OpenPortToolStripMenuItem.Text = "Disconnect"
+                OpenPortToolStripMenuItem.BackColor = Color.Lime
+                ConnectionStatusStripLabelPort.Text = "Connected to IP " & ip_address.ToString
+                TimerReceive.Enabled = True ' Start receiving
+                TimerSend.Enabled = True
+                TimerCompare.Enabled = True
+                rbtnY0On.Enabled = True
+                rbtnY1On.Enabled = True
+                rbtnY2On.Enabled = True
+                chckbxAutoMode.AutoCheck = True
+                StatusStripLabelAutoMode.Text = "Automatic mode is off"
+                ' Get and display any errors that occur
+            Catch ex As Exception
+                MsgBox(ex.ToString()) ' Error display
+            End Try
 
-            ' If opened, close
-            If fs_is_connected Then
-                Disconnect()
-
-            Else ' If closed, open
-                ' Try to open the port. If fails, display error
-                Try
-                    fs.Connect()
-                    fs_is_connected = True
-                    OpenPortToolStripMenuItem.Text = "Disconnect"
-                    OpenPortToolStripMenuItem.BackColor = Color.Lime
-                    ConnectionStatusStripLabelPort.Text = "Connected To FaconSrv"
-                    TimerReceive.Enabled = True ' Start receiving
-                    TimerSend.Enabled = True
-                    PortConfigurationToolStripMenuItem.Enabled = False
-                    rbtnY0On.Enabled = True
-                    rbtnY1On.Enabled = True
-                    rbtnY2On.Enabled = True
-
-                Catch ex As Exception
-                    MsgBox(ex.ToString()) ' Error display
-                End Try
-            End If
-
+            ' Else is already connected and with the click we want to disconnect
         Else
-            MsgBox("Cannot open port with invalid configuration")
+            Disconnect()
         End If
     End Sub
 
     Private Sub TimerReceive_Tick(sender As Object, e As EventArgs) Handles TimerReceive.Tick
-        Dim data As String
+        ' If there is a connection, get the message
+        If client.Connected Then
+            Dim message_size As Integer = client.Available
 
-        ' Define variable values an per the received message
-        Y0 = fs.GetItem(CSG, "Y0")
-        Y1 = fs.GetItem(CSG, "Y1")
-        Y2 = fs.GetItem(CSG, "Y2")
+            ' Read message if size is not zero
+            If message_size > 0 Then
 
-        X0 = fs.GetItem(CSG, "X0")
-        X1 = fs.GetItem(CSG, "X1")
-        X2 = fs.GetItem(CSG, "X2")
-        X3 = fs.GetItem(CSG, "X3")
+                ' Copy stream to byte array buffer
+                Dim message_in_stream As NetworkStream = client.GetStream()
+
+                ' A buffer to copy the received data
+                Dim buffer(message_size) As Byte
+                message_in_stream.Read(buffer, 0, message_size)
+
+                '! Convert byte array buffer to a string
+                Dim message_in As String = ""
+                Dim i As Integer
+
+                ' Copy from buffer to message in
+                For i = 0 To message_size - 1
+#Disable Warning S1643 ' Strings should not be concatenated using "+" or "&" in a loop
+                    message_in += Chr(buffer(i))
+#Enable Warning S1643 ' Strings should not be concatenated using "+" or "&" in a loop
+                Next i
+
+
+                DisplayMesssages.txtReceived.AppendText($"{Now}{" "}{message_in}")
+                DisplayMesssages.txtReceived.Text += vbCrLf
+                StatusStripLabelWarnings.Text = "Message received: " & message_in
+
+                ' Show always last message
+                Dim last As Long
+                last = Len(DisplayMesssages.txtReceived.Text)
+                DisplayMesssages.txtReceived.SelectionStart = last
+                ' Define the variables as per values received
+                X0 = Mid(message_in, 1, 1)
+                X1 = Mid(message_in, 2, 1)
+                X2 = Mid(message_in, 3, 1)
+                X3 = Mid(message_in, 4, 1)
+                Y0_in = Mid(message_in, 5, 1)
+                Y1_in = Mid(message_in, 6, 1)
+                Y2_in = Mid(message_in, 7, 1)
+                level = Asc(Mid(message_in, 8, 1))
+
+            End If
+        End If
 
         ' Set the GUI to show vars values
         rbtnStatusY0.Checked = Y0
@@ -118,14 +149,7 @@ Public Class Form1
         rbtnX2.Checked = X2
         rbtnX3.Checked = X3
 
-        level = fs.GetItem(CSG, "D300")
         txtbxLevel.Text = level
-
-        data = ($"{Now}{" "}{"s_ToPC"}{Y0}{Y1}{Y2}{X0}{X1}{X2}{X3}{level}{"_e"}{vbCrLf}")
-
-        DisplayMesssages.txtReceived.AppendText(data)
-
-        StatusStripLabelWarnings.Text = "Message received: " & data
 
         ' Change picture box size according to the level received
         Dim height_difference = CDbl(level_bottom_y - level_start_y) * (1 - (level / 100))
@@ -165,10 +189,10 @@ Public Class Form1
         ' If not automatic mode, go back to normal
         If chckbxAutoMode.CheckState = CheckState.Unchecked Then
             TimerAutoMode.Enabled = False
-            StatusStripLabelAutoMode.Text = "Automatic Mode is Disabled"
+            StatusStripLabelAutoMode.Text = "Automatic mode is off"
 
             ' Enable control buttons
-            If cfg_is_valid AndAlso SerialPort.IsOpen Then
+            If client.Connected Then
                 rbtnY0On.Enabled = True
                 rbtnY1On.Enabled = True
                 rbtnY2On.Enabled = True
@@ -176,7 +200,7 @@ Public Class Form1
 
             ' If automatic mode, disable buttons
         ElseIf chckbxAutoMode.CheckState = CheckState.Checked Then
-            StatusStripLabelAutoMode.Text = "Automatic Mode is Enabled"
+            StatusStripLabelAutoMode.Text = "Automatic mode is on"
             TimerAutoMode.Enabled = True
             rbtnY0On.Enabled = False
             rbtnY1On.Enabled = False
@@ -188,20 +212,22 @@ Public Class Form1
     ' Subroutine to disconnect
     Private Sub Disconnect()
         ' Functional actions
-        fs_is_connected = False
-        TimerReceive.Enabled = False
+        client.Close()
+        client = New Sockets.TcpClient
+        first_time = True
         TimerSend.Enabled = False
-        fs.Disconnect()
+        TimerReceive.Enabled = False
+        TimerCompare.Enabled = False
 
         ' GUI Actions
         OpenPortToolStripMenuItem.Text = "Connect"
         OpenPortToolStripMenuItem.BackColor = Color.Red
-        PortConfigurationToolStripMenuItem.Enabled = True
-        FastConnectToolStripMenuItem.Enabled = True
         rbtnY0On.Enabled = False
         rbtnY1On.Enabled = False
         rbtnY2On.Enabled = False
+        chckbxAutoMode.AutoCheck = False
         ConnectionStatusStripLabelPort.Text = "Not connected"
+        StatusStripLabelAutoMode.Text = "Automatic mode is disabled"
     End Sub
 
     ' Subroutine to update the GUI
@@ -231,28 +257,17 @@ Public Class Form1
         End If
     End Sub
 
-    ' Enable fast connect for easier as faster connection
-    Private Sub FastConnectToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FastConnectToolStripMenuItem.Click
-        ModulePortParameters.cfg_is_valid = True
-
-        faconsrv_path = "B:\Universidade de Aveiro\Informática Industrial\Aulas_P\Aula_8\II_TP6_84400.fcs"
-
-        FastConnectToolStripMenuItem.Enabled = False
-
-        OpenPortToolStripMenuItem.PerformClick()
-    End Sub
-
     '------------------------------------
     ' Automatic mode
     '------------------------------------
     Private Sub TimerAutoMode_Tick(sender As Object, e As EventArgs) Handles TimerAutoMode.Tick
-        If (X0 = 1 AndAlso level < 10) Then
+        If (X0 = 1 AndAlso level < 30) Then
             StatusStripLabelAutoMode.Text = "Warning! Water level is dangerously low!"
             Y0 = 1
             Y1 = 1
             Y2 = 0
 
-        ElseIf (X1 = 1 AndAlso (level >= 10 AndAlso level <= 75)) Then
+        ElseIf (X1 = 1 AndAlso (level >= 30 AndAlso level <= 75)) Then
             StatusStripLabelAutoMode.Text = "X1 on, filling the reservoir"
             Y0 = 1
             Y1 = 1
@@ -269,9 +284,9 @@ Public Class Form1
             Y0 = 0
             Y1 = 0
             Y2 = 1
-        ElseIf (X0 = 0 AndAlso level < 10) Then
+        ElseIf (X0 = 0 AndAlso level < 30) Then
             StatusStripLabelAutoMode.Text = "Error in  sensor X0 or water level sensor"
-        ElseIf (X1 = 0 AndAlso (level >= 10 AndAlso level <= 75)) Then
+        ElseIf (X1 = 0 AndAlso (level >= 30 AndAlso level <= 75)) Then
             StatusStripLabelAutoMode.Text = "Error in  sensor X1 or water level sensor"
         ElseIf (X2 = 0 AndAlso (level > 75 AndAlso level <= 90)) Then
             StatusStripLabelAutoMode.Text = "Error in  sensor X2 or water level sensor"
@@ -285,34 +300,70 @@ Public Class Form1
     ' Send message every tick
     '------------------------------------
     Private Sub TimerSend_Tick(sender As Object, e As EventArgs) Handles TimerSend.Tick
-        Dim output As String = "s_ToPLC" & CStr(Y0) & CStr(Y1) & CStr(Y2) & "_e"
+        Dim output As String = ""
 
-        'SerialPort.Write(output)
-        fs.SetItem(CSG, "Y0", Y0)
-        fs.SetItem(CSG, "Y1", Y1)
-        fs.SetItem(CSG, "Y2", Y2)
+        ' If connected, message can be sent
+        If client.Connected Then
+            Try
+                ' Declare a byte array and set it according to the state of the check-boxes
+                Dim buffer(3) As Byte
+                buffer(0) = rbtnStatusY0.CheckState + 48
+                buffer(1) = rbtnStatusY1.CheckState + 48
+                buffer(2) = rbtnStatusY2.CheckState + 48
 
-        DisplayMesssages.txtSent.AppendText($"{Now}{" "}{output}{vbCrLf}")
+                ' Now send the array
+                Dim message_out_stream As NetworkStream
+                message_out_stream = client.GetStream()
+                message_out_stream.Write(buffer, 0, buffer.Length)
+
+                Dim i As Integer
+
+                ' Copy from buffer to message in
+                For i = 0 To buffer.Length - 1
+#Disable Warning S1643 ' Strings should not be concatenated using "+" or "&" in a loop
+                    output += Chr(buffer(i))
+#Enable Warning S1643 ' Strings should not be concatenated using "+" or "&" in a loop
+                Next i
+
+                ' Catch and display any errors that occur
+            Catch ex As Exception
+                MsgBox(ex.ToString()) ' Error display
+            End Try
+        End If
+
+        DisplayMesssages.txtSent.AppendText($"{Now}{" "}{output}")
         SentStripStatusLabel.Text = "Message Sent: " & output
+        DisplayMesssages.txtSent.Text += vbCrLf
+
+        ' Show always last message
+        Dim last As Long
+        last = Len(DisplayMesssages.txtSent.Text)
+        DisplayMesssages.txtSent.SelectionStart = last
 
         UpdateButtonImages()
     End Sub
 
     ' About box
     Private Sub AboutToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem1.Click
-        MsgBox("Reservoir control made by Fábio Sousa, with the mec. 84400 in 20/03/2023 for the class 'Industrial Informatics'")
+        MsgBox("Reservoir control client made by Fábio Sousa, with the mec. 84400 in 20/03/2023 for the class 'Industrial Informatics'")
 
     End Sub
 
     Private Sub AutomaticModeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AutomaticModeToolStripMenuItem.Click
         MsgBox("Automatic mode detects the state of the reservoir, fills when needed and emits alarms when empty or full. After X1, it allows the water to be consumed.
-                Thresholds: To be empty, water level < 10 and X0 on
-                            To start filling, 10 <= water level <= 75 and X1 on
+                Thresholds: To be empty, water level < 30 and X0 on
+                            To start filling, 30 <= water level <= 75 and X1 on
                             To stop filling, 75 < water level <= 90 and X2 on
                             To be full, water level > 90 and X3 on")
     End Sub
 
-    Private Sub FastConnectToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles FastConnectToolStripMenuItem1.Click
-        MsgBox("Fast connect is defaulted to the file B:\Universidade de Aveiro\Informática Industrial\Aulas_P\Aula_6\II_TP6_84400.fcs")
+    Private Sub TimerCompare_Tick(sender As Object, e As EventArgs) Handles TimerCompare.Tick
+        ' Check if valve status in client differs from server
+        If Y0 <> Y0_in OrElse Y1 <> Y1_in OrElse Y2 <> Y2_in Then
+            ToolStripStatusCompare.Text = "Changing valves status"
+
+        Else
+            ToolStripStatusCompare.Text = "Valves status synchronized"
+        End If
     End Sub
 End Class

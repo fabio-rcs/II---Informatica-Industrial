@@ -4,10 +4,10 @@ Imports System.Runtime.InteropServices
 
 Public Class Server_Form
     ' The IP address of the server
-    Dim local_adress As IPAddress = IPAddress.Parse("192.168.0.80")
+    Dim local_adress As IPAddress = IPAddress.Parse("192.168.1.69")
 
     ' A server object will accept connection requests
-    Dim server As New TcpListener(local_adress, 81)
+    Dim server As New TcpListener(local_adress, 80)
 
     ' A connection object will receive data
     Dim connection As New TcpClient
@@ -21,7 +21,8 @@ Public Class Server_Form
     ReadOnly CSG As String = "Channel0.Station0.Group0"
 
     Private Sub Server_Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
+        Me.Text = "Reservoir Control - Server"
+        Me.Icon = New Icon("ua-favicon.ico")
         ' Start the TCP server.
         ' Will wait for clients to connect
         server.Start()
@@ -37,6 +38,9 @@ Public Class Server_Form
         txtbxWaterLvl.Text = ""
         txtbxMessageReceived.ScrollBars = RichTextBoxScrollBars.ForcedVertical
         txtbxMessageReceived.HideSelection = False
+        txtbxMessageSent.ScrollBars = RichTextBoxScrollBars.ForcedVertical
+        txtbxMessageSent.HideSelection = False
+        ToolStripStatusLabel3.Text = ""
 
         ' Call the routine to disconnect (initial status should be disconnected) and update GUI
         Disconnect()
@@ -63,6 +67,8 @@ Public Class Server_Form
                 Dim message_in As String = ""
                 Dim i As Integer
 
+                Dim data As String
+
                 ' Append each buffer to message_in
                 For i = 0 To message_size - 1
 #Disable Warning S1643 ' Strings should not be concatenated using "+" or "&" in a loop
@@ -71,7 +77,9 @@ Public Class Server_Form
                 Next
 
                 ' Display message received
-                txtbxMessageReceived.Text &= message_in & vbTab & Now.ToString & vbCrLf
+                data = $"{Now}{" "}{message_in}"
+                txtbxMessageReceived.AppendText(data)
+                txtbxMessageReceived.Text += vbCrLf
 
                 ' Show always last message
                 Dim last As Long
@@ -101,28 +109,12 @@ Public Class Server_Form
         chckbxY1.CheckState = fs.GetItem(CSG, "Y1")
         chckbxY2.CheckState = fs.GetItem(CSG, "Y2")
         txtbxWaterLvl.Text = fs.GetItem(CSG, "D300")
-
-        If connection.Connected Then
-            Dim status(8) As Byte
-
-            status(0) = chckbxX0.CheckState + 48
-            status(1) = chckbxX1.CheckState + 48
-            status(2) = chckbxX2.CheckState + 48
-            status(3) = chckbxX3.CheckState + 48
-            status(4) = chckbxY0.CheckState + 48
-            status(5) = chckbxY1.CheckState + 48
-            status(6) = chckbxY2.CheckState + 48
-            status(8) = txtbxWaterLvl.Text
-
-            Dim stream As NetworkStream = connection.GetStream()
-            stream.Write(status, 0, status.Length)
-        End If
     End Sub
 
     Private Sub TimerConnection_Tick(sender As Object, e As EventArgs) Handles TimerConnection.Tick
         ' Display connection status
         ToolStripStatusLabel1.Text = If(connection.Connected, "Connection Established", "Not Connected")
-        ToolStripStatusLabel2.Text = If(connection.Connected, "IP: 127.0.0.1 | Port: 81", "")
+        ToolStripStatusLabel2.Text = If(connection.Connected, local_adress.ToString, "")
 
         ' Update button according to connection status
         If stoped Then
@@ -179,7 +171,7 @@ Public Class Server_Form
 
     Private Sub ConnectToFaconServerToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConnectToFaconServerToolStripMenuItem.Click
         ' Allow to open port only if config is valid
-        If ModulePortParameters.cfg_is_valid Then
+        If ModulePathParameters.cfg_is_valid Then
 
             ' If opened, close
             If fs_is_connected Then
@@ -212,21 +204,66 @@ Public Class Server_Form
         ' Dim form1 to highlight formPortConfig
         Me.Opacity = 0.5
         ' Show in center of parent form
-        PortConfiguration.StartPosition = FormStartPosition.CenterParent
+        Form_FaconSrvPath.StartPosition = FormStartPosition.CenterParent
         ' Show dialog blocks from doing anything in parent form until is closed
-        PortConfiguration.ShowDialog()
+        Form_FaconSrvPath.ShowDialog()
         ' Return opacity to normal after closing
         Me.Opacity = 1
 
-        If ModulePortParameters.cfg_is_valid Then
+        If ModulePathParameters.cfg_is_valid Then
             ' FaconSrv connection
-            fs.OpenProject(ModulePortParameters.faconsrv_path)
+            fs.OpenProject(ModulePathParameters.faconsrv_path)
+        End If
+    End Sub
+
+    Private Sub TimerSend_Tick(sender As Object, e As EventArgs) Handles TimerSend.Tick
+        Dim output As String = ""
+
+        If connection.Connected Then
+
+            Dim status(8) As Byte
+
+            status(0) = chckbxX0.CheckState + 48
+            status(1) = chckbxX1.CheckState + 48
+            status(2) = chckbxX2.CheckState + 48
+            status(3) = chckbxX3.CheckState + 48
+            status(4) = chckbxY0.CheckState + 48
+            status(5) = chckbxY1.CheckState + 48
+            status(6) = chckbxY2.CheckState + 48
+            status(7) = txtbxWaterLvl.Text
+
+            Try
+                Dim stream As NetworkStream = connection.GetStream()
+                stream.Write(status, 0, status.Length)
+
+                Dim i As Integer
+
+                ' Copy from buffer to message in
+                For i = 0 To status.Length - 1
+#Disable Warning S1643 ' Strings should not be concatenated using "+" or "&" in a loop
+                    output += Chr(status(i))
+#Enable Warning S1643 ' Strings should not be concatenated using "+" or "&" in a loop
+                Next i
+
+            Catch ex As Exception
+                MsgBox(ex.ToString())
+            End Try
+
+            Dim data As String
+            data = $"{Now}{" "}{output}"
+            txtbxMessageSent.AppendText(data)
+            txtbxMessageSent.Text += vbCrLf
+
+            ' Show always last message
+            Dim last As Long
+            last = Len(txtbxMessageSent.Text)
+            txtbxMessageSent.SelectionStart = last
         End If
     End Sub
 
     ' Enable fast connect for easier as faster connection
     Private Sub FastConnectToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FastConnectToolStripMenuItem.Click
-        ModulePortParameters.cfg_is_valid = True
+        ModulePathParameters.cfg_is_valid = True
 
         faconsrv_path = "B:\Universidade de Aveiro\Informática Industrial\Aulas_P\Aula_8\II_TP6_84400.fcs"
 
@@ -235,7 +272,7 @@ Public Class Server_Form
     End Sub
 
     Private Sub AboutToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
-        MsgBox("Reservoir server made by Fábio Sousa, with the mec. 84400 in 20/03/2023 for the class 'Industrial Informatics'")
+        MsgBox("Reservoir server made by Fábio Sousa, with the mec. 84400 for the class 'Industrial Informatics'")
     End Sub
 
     Private Sub AboutFastConnectToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutFastConnectToolStripMenuItem.Click

@@ -22,6 +22,7 @@ Public Class Server_Form
         server.Start()
 
         ' Initial defaults
+        stoped = False
         ToolStripStatusLabel1.Text = ""
         TimerConnection.Interval = 1000
         TimerReceive.Interval = 1000
@@ -81,9 +82,14 @@ Public Class Server_Form
     End Sub
 
     Private Sub TimerConnection_Tick(sender As Object, e As EventArgs) Handles TimerConnection.Tick
-        ' Display connection status
-        ToolStripStatusLabel1.Text = If(connection.Connected, "Connection Established", "Not Connected")
-        ToolStripStatusLabel2.Text = If(connection.Connected, "IP: 127.0.0.1 | Port: 81", "")
+        Try
+            ' Display connection status
+            ToolStripStatusLabel1.Text = If(connection.Connected, "Connection Established", "Not Connected")
+            ToolStripStatusLabel2.Text = If(connection.Connected, local_adress.ToString, "")
+        Catch ex As Exception
+            MsgBox(ex.ToString()) ' Error display
+        End Try
+
 
         ' Update button according to connection status
         If stoped Then

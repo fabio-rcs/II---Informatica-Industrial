@@ -31,7 +31,7 @@ Partial Class DisplayMesssages
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(47, 69)
+        Me.Label1.Location = New System.Drawing.Point(9, 69)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(101, 16)
         Me.Label1.TabIndex = 3
@@ -40,7 +40,7 @@ Partial Class DisplayMesssages
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(444, 69)
+        Me.Label2.Location = New System.Drawing.Point(288, 69)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(133, 16)
         Me.Label2.TabIndex = 4
@@ -48,17 +48,17 @@ Partial Class DisplayMesssages
         '
         'txtReceived
         '
-        Me.txtReceived.Location = New System.Drawing.Point(447, 105)
+        Me.txtReceived.Location = New System.Drawing.Point(291, 105)
         Me.txtReceived.Name = "txtReceived"
-        Me.txtReceived.Size = New System.Drawing.Size(326, 333)
+        Me.txtReceived.Size = New System.Drawing.Size(248, 333)
         Me.txtReceived.TabIndex = 5
         Me.txtReceived.Text = ""
         '
         'txtSent
         '
-        Me.txtSent.Location = New System.Drawing.Point(50, 105)
+        Me.txtSent.Location = New System.Drawing.Point(12, 105)
         Me.txtSent.Name = "txtSent"
-        Me.txtSent.Size = New System.Drawing.Size(326, 333)
+        Me.txtSent.Size = New System.Drawing.Size(250, 333)
         Me.txtSent.TabIndex = 6
         Me.txtSent.Text = ""
         '
@@ -66,7 +66,7 @@ Partial Class DisplayMesssages
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.ClientSize = New System.Drawing.Size(548, 450)
         Me.Controls.Add(Me.txtSent)
         Me.Controls.Add(Me.txtReceived)
         Me.Controls.Add(Me.Label2)

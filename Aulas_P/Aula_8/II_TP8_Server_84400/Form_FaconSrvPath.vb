@@ -1,7 +1,7 @@
 ﻿Imports System.IO.Ports
 Imports System.Text
 
-Public Class PortConfiguration
+Public Class Form_FaconSrvPath
     Dim path As String
     Dim file_success As Integer
 
@@ -17,15 +17,15 @@ Public Class PortConfiguration
     ' Button clicks routine ------------------------------
     '-----------------------------------------------------
     Private Sub BtnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
-        ModulePortParameters.cfg_is_valid = False
+        ModulePathParameters.cfg_is_valid = False
         Me.Close()
     End Sub
 
     Private Sub BtnOk_Click(sender As Object, e As EventArgs) Handles btnOk.Click
-        ModulePortParameters.faconsrv_path = path
+        ModulePathParameters.faconsrv_path = path
 
         ' Set flag for valid config
-        ModulePortParameters.cfg_is_valid = True
+        ModulePathParameters.cfg_is_valid = True
 
         Me.Close()
     End Sub

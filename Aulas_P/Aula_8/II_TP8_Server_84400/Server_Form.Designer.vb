@@ -53,14 +53,17 @@ Partial Class Server_Form
         Me.FastConnectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AboutFastConnectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConnectionStatusStrip = New System.Windows.Forms.StatusStrip()
         Me.ConnectionStatusStripLabelPort = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.AboutFastConnectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.txtbxMessageSent = New System.Windows.Forms.RichTextBox()
         Me.gboxReception.SuspendLayout()
         Me.gbxTransmission.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.ConnectionStatusStrip.SuspendLayout()
+        Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
         '
         'gboxReception
@@ -180,7 +183,7 @@ Partial Class Server_Form
         Me.txtbxMessageReceived.Location = New System.Drawing.Point(6, 21)
         Me.txtbxMessageReceived.Name = "txtbxMessageReceived"
         Me.txtbxMessageReceived.ReadOnly = True
-        Me.txtbxMessageReceived.Size = New System.Drawing.Size(392, 172)
+        Me.txtbxMessageReceived.Size = New System.Drawing.Size(392, 55)
         Me.txtbxMessageReceived.TabIndex = 8
         Me.txtbxMessageReceived.Text = ""
         '
@@ -189,7 +192,7 @@ Partial Class Server_Form
         Me.gbxTransmission.Controls.Add(Me.txtbxMessageReceived)
         Me.gbxTransmission.Location = New System.Drawing.Point(26, 248)
         Me.gbxTransmission.Name = "gbxTransmission"
-        Me.gbxTransmission.Size = New System.Drawing.Size(404, 199)
+        Me.gbxTransmission.Size = New System.Drawing.Size(404, 86)
         Me.gbxTransmission.TabIndex = 1
         Me.gbxTransmission.TabStop = False
         Me.gbxTransmission.Text = "Received Messages"
@@ -239,6 +242,9 @@ Partial Class Server_Form
         'TimerConnection
         '
         '
+        'TimerSend
+        '
+        '
         'MenuStrip1
         '
         Me.MenuStrip1.ImageScalingSize = New System.Drawing.Size(20, 20)
@@ -259,7 +265,7 @@ Partial Class Server_Form
         'CloseToolStripMenuItem
         '
         Me.CloseToolStripMenuItem.Name = "CloseToolStripMenuItem"
-        Me.CloseToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.CloseToolStripMenuItem.Size = New System.Drawing.Size(128, 26)
         Me.CloseToolStripMenuItem.Text = "Close"
         '
         'CommunicationsToolStripMenuItem
@@ -300,6 +306,12 @@ Partial Class Server_Form
         Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
         Me.AboutToolStripMenuItem.Text = "About This Program"
         '
+        'AboutFastConnectToolStripMenuItem
+        '
+        Me.AboutFastConnectToolStripMenuItem.Name = "AboutFastConnectToolStripMenuItem"
+        Me.AboutFastConnectToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.AboutFastConnectToolStripMenuItem.Text = "About Fast Connect"
+        '
         'ConnectionStatusStrip
         '
         Me.ConnectionStatusStrip.ImageScalingSize = New System.Drawing.Size(20, 20)
@@ -317,27 +329,41 @@ Partial Class Server_Form
         Me.ConnectionStatusStripLabelPort.Size = New System.Drawing.Size(217, 20)
         Me.ConnectionStatusStripLabelPort.Text = "ConnectionStatusStripLabelPort"
         '
-        'AboutFastConnectToolStripMenuItem
+        'GroupBox1
         '
-        Me.AboutFastConnectToolStripMenuItem.Name = "AboutFastConnectToolStripMenuItem"
-        Me.AboutFastConnectToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
-        Me.AboutFastConnectToolStripMenuItem.Text = "About Fast Connect"
+        Me.GroupBox1.Controls.Add(Me.txtbxMessageSent)
+        Me.GroupBox1.Location = New System.Drawing.Point(26, 361)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(404, 86)
+        Me.GroupBox1.TabIndex = 9
+        Me.GroupBox1.TabStop = False
+        Me.GroupBox1.Text = "Sent Messages"
+        '
+        'txtbxMessageSent
+        '
+        Me.txtbxMessageSent.Location = New System.Drawing.Point(6, 21)
+        Me.txtbxMessageSent.Name = "txtbxMessageSent"
+        Me.txtbxMessageSent.ReadOnly = True
+        Me.txtbxMessageSent.Size = New System.Drawing.Size(392, 55)
+        Me.txtbxMessageSent.TabIndex = 8
+        Me.txtbxMessageSent.Text = ""
         '
         'Server_Form
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(446, 568)
+        Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.ConnectionStatusStrip)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.MenuStrip1)
         Me.Controls.Add(Me.btnOff)
         Me.Controls.Add(Me.gbxTransmission)
         Me.Controls.Add(Me.gboxReception)
-        Me.Location = New System.Drawing.Point(960, 200)
+        Me.Location = New System.Drawing.Point(540, 200)
         Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "Server_Form"
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Server"
         Me.gboxReception.ResumeLayout(False)
         Me.gboxReception.PerformLayout()
@@ -348,6 +374,7 @@ Partial Class Server_Form
         Me.MenuStrip1.PerformLayout()
         Me.ConnectionStatusStrip.ResumeLayout(False)
         Me.ConnectionStatusStrip.PerformLayout()
+        Me.GroupBox1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -386,4 +413,6 @@ Partial Class Server_Form
     Friend WithEvents ConnectionStatusStrip As StatusStrip
     Friend WithEvents ConnectionStatusStripLabelPort As ToolStripStatusLabel
     Friend WithEvents AboutFastConnectToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents GroupBox1 As GroupBox
+    Friend WithEvents txtbxMessageSent As RichTextBox
 End Class

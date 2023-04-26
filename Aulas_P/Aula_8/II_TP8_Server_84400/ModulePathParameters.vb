@@ -1,4 +1,4 @@
-﻿Module ModulePortParameters
+﻿Module ModulePathParameters
 
     'Global variables for the communication parameters 
     Public cfg_is_valid As Boolean

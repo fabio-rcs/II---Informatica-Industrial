@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F334B2FD-B64A-47A9-9F9F-4E4E3455C270}</ProjectGuid>
+    <ProjectGuid>{C881417E-2BA1-4D69-8F48-10E6A6DE414D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>II_TP5_84400.My.MyApplication</StartupObject>
-    <RootNamespace>II_TP5_84400</RootNamespace>
-    <AssemblyName>II_TP5_84400</AssemblyName>
+    <StartupObject>II_TP8_Server_84400.My.MyApplication</StartupObject>
+    <RootNamespace>II_TP8_Server_84400</RootNamespace>
+    <AssemblyName>II_TP8_Server_84400</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -22,7 +22,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>II_TP5_84400.xml</DocumentationFile>
+    <DocumentationFile>II_TP8_Server_84400.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -32,7 +32,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>II_TP5_84400.xml</DocumentationFile>
+    <DocumentationFile>II_TP8_Server_84400.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -46,6 +46,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ua-favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -73,30 +76,12 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DisplayMesssages.Designer.vb">
-      <DependentUpon>DisplayMesssages.vb</DependentUpon>
-    </Compile>
-    <Compile Include="DisplayMesssages.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.vb">
-      <DependentUpon>Form1.vb</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ModulePortParameters.vb" />
-    <Compile Include="PortConfiguration.Designer.vb">
-      <DependentUpon>PortConfiguration.vb</DependentUpon>
-    </Compile>
-    <Compile Include="PortConfiguration.vb">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="ModulePathParameters.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -108,22 +93,31 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Form_FaconSrvPath.Designer.vb">
+      <DependentUpon>Form_FaconSrvPath.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form_FaconSrvPath.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Server_Form.Designer.vb">
+      <DependentUpon>Server_Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Server_Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DisplayMesssages.resx">
-      <DependentUpon>DisplayMesssages.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="PortConfiguration.resx">
-      <DependentUpon>PortConfiguration.vb</DependentUpon>
+    <EmbeddedResource Include="Form_FaconSrvPath.resx">
+      <DependentUpon>Form_FaconSrvPath.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Server_Form.resx">
+      <DependentUpon>Server_Form.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +142,11 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ua-favicon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

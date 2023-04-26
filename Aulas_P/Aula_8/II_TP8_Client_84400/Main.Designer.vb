@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class Form1
+Partial Class Main
     Inherits System.Windows.Forms.Form
 
     'Descartar substituições de formulário para limpar a lista de componentes.
@@ -23,21 +23,18 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Main))
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.MenuStrip = New System.Windows.Forms.MenuStrip()
         Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExitToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CommunicationsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PortConfigurationToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenPortToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.FastConnectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DebugFormToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.AutomaticModeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.FastConnectToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConnectionStatusStrip = New System.Windows.Forms.StatusStrip()
         Me.ConnectionStatusStripLabelPort = New System.Windows.Forms.ToolStripStatusLabel()
         Me.StatusStrip = New System.Windows.Forms.StatusStrip()
@@ -66,6 +63,8 @@ Partial Class Form1
         Me.rbtnX1 = New System.Windows.Forms.CheckBox()
         Me.rbtnX2 = New System.Windows.Forms.CheckBox()
         Me.rbtnX3 = New System.Windows.Forms.CheckBox()
+        Me.ToolStripStatusCompare = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.TimerCompare = New System.Windows.Forms.Timer(Me.components)
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
         Me.ConnectionStatusStrip.SuspendLayout()
@@ -113,28 +112,16 @@ Partial Class Form1
         '
         'CommunicationsToolStripMenuItem
         '
-        Me.CommunicationsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PortConfigurationToolStripMenuItem, Me.OpenPortToolStripMenuItem, Me.FastConnectToolStripMenuItem})
+        Me.CommunicationsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenPortToolStripMenuItem})
         Me.CommunicationsToolStripMenuItem.Name = "CommunicationsToolStripMenuItem"
         Me.CommunicationsToolStripMenuItem.Size = New System.Drawing.Size(134, 24)
         Me.CommunicationsToolStripMenuItem.Text = "Communications"
         '
-        'PortConfigurationToolStripMenuItem
-        '
-        Me.PortConfigurationToolStripMenuItem.Name = "PortConfigurationToolStripMenuItem"
-        Me.PortConfigurationToolStripMenuItem.Size = New System.Drawing.Size(243, 26)
-        Me.PortConfigurationToolStripMenuItem.Text = "FaconSrv configuration"
-        '
         'OpenPortToolStripMenuItem
         '
         Me.OpenPortToolStripMenuItem.Name = "OpenPortToolStripMenuItem"
-        Me.OpenPortToolStripMenuItem.Size = New System.Drawing.Size(243, 26)
+        Me.OpenPortToolStripMenuItem.Size = New System.Drawing.Size(158, 26)
         Me.OpenPortToolStripMenuItem.Text = "Open Port"
-        '
-        'FastConnectToolStripMenuItem
-        '
-        Me.FastConnectToolStripMenuItem.Name = "FastConnectToolStripMenuItem"
-        Me.FastConnectToolStripMenuItem.Size = New System.Drawing.Size(243, 26)
-        Me.FastConnectToolStripMenuItem.Text = "Fast Connect"
         '
         'ViewToolStripMenuItem
         '
@@ -151,7 +138,7 @@ Partial Class Form1
         '
         'HelpToolStripMenuItem
         '
-        Me.HelpToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AboutToolStripMenuItem1, Me.AutomaticModeToolStripMenuItem, Me.FastConnectToolStripMenuItem1})
+        Me.HelpToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AboutToolStripMenuItem1, Me.AutomaticModeToolStripMenuItem})
         Me.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem"
         Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(55, 24)
         Me.HelpToolStripMenuItem.Text = "Help"
@@ -167,12 +154,6 @@ Partial Class Form1
         Me.AutomaticModeToolStripMenuItem.Name = "AutomaticModeToolStripMenuItem"
         Me.AutomaticModeToolStripMenuItem.Size = New System.Drawing.Size(204, 26)
         Me.AutomaticModeToolStripMenuItem.Text = "Automatic Mode"
-        '
-        'FastConnectToolStripMenuItem1
-        '
-        Me.FastConnectToolStripMenuItem1.Name = "FastConnectToolStripMenuItem1"
-        Me.FastConnectToolStripMenuItem1.Size = New System.Drawing.Size(204, 26)
-        Me.FastConnectToolStripMenuItem1.Text = "Fast Connect"
         '
         'ConnectionStatusStrip
         '
@@ -194,7 +175,7 @@ Partial Class Form1
         'StatusStrip
         '
         Me.StatusStrip.ImageScalingSize = New System.Drawing.Size(20, 20)
-        Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StatusStripLabelAutoMode, Me.StatusStripLabelWarnings, Me.SentStripStatusLabel})
+        Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StatusStripLabelAutoMode, Me.StatusStripLabelWarnings, Me.SentStripStatusLabel, Me.ToolStripStatusCompare})
         Me.StatusStrip.Location = New System.Drawing.Point(0, 446)
         Me.StatusStrip.Name = "StatusStrip"
         Me.StatusStrip.Padding = New System.Windows.Forms.Padding(1, 0, 13, 0)
@@ -424,7 +405,13 @@ Partial Class Form1
         Me.rbtnX3.Text = "X3"
         Me.rbtnX3.UseVisualStyleBackColor = True
         '
-        'Form1
+        'ToolStripStatusCompare
+        '
+        Me.ToolStripStatusCompare.Name = "ToolStripStatusCompare"
+        Me.ToolStripStatusCompare.Size = New System.Drawing.Size(153, 20)
+        Me.ToolStripStatusCompare.Text = "ToolStripStatusLabel1"
+        '
+        'Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -453,7 +440,7 @@ Partial Class Form1
         Me.Controls.Add(Me.MenuStrip)
         Me.MainMenuStrip = Me.MenuStrip
         Me.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.Name = "Form1"
+        Me.Name = "Main"
         Me.Text = "Form1"
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.MenuStrip.ResumeLayout(False)
@@ -486,10 +473,8 @@ Partial Class Form1
     Friend WithEvents picbxY1 As PictureBox
     Friend WithEvents FileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents CommunicationsToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents PortConfigurationToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ViewToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DebugFormToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents OpenPortToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents StatusStripLabelAutoMode As ToolStripStatusLabel
     Friend WithEvents StatusStripLabelWarnings As ToolStripStatusLabel
     Friend WithEvents picbxWaterLevel As PictureBox
@@ -504,7 +489,6 @@ Partial Class Form1
     Friend WithEvents rbtnY2On As Button
     Friend WithEvents SentStripStatusLabel As ToolStripStatusLabel
     Friend WithEvents ToolStripMenuItem1 As ToolStripMenuItem
-    Friend WithEvents FastConnectToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents TimerSend As Timer
     Friend WithEvents rbtnStatusY0 As CheckBox
     Friend WithEvents rbtnStatusY1 As CheckBox
@@ -516,5 +500,7 @@ Partial Class Form1
     Friend WithEvents HelpToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AboutToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents AutomaticModeToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents FastConnectToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents OpenPortToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripStatusCompare As ToolStripStatusLabel
+    Friend WithEvents TimerCompare As Timer
 End Class

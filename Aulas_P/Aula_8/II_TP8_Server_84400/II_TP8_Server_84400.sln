@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "II_TP7_Client_84400", "II_TP7_Client_84400\II_TP7_Client_84400.vbproj", "{C881417E-2BA1-4D69-8F48-10E6A6DE414D}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "II_TP8_Server_84400", "II_TP8_Server_84400.vbproj", "{C881417E-2BA1-4D69-8F48-10E6A6DE414D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +20,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {820113AA-B381-4984-BDC9-FE2309E0BE8C}
+		SolutionGuid = {CF9B99FF-5547-4F99-8287-FFB4C6D3A7AF}
 	EndGlobalSection
 EndGlobal
