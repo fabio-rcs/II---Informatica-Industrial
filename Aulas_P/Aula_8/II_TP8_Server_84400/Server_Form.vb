@@ -4,10 +4,11 @@ Imports System.Runtime.InteropServices
 
 Public Class Server_Form
     ' The IP address of the server
-    Dim local_adress As IPAddress = IPAddress.Parse("192.168.1.69")
+    ReadOnly ip As String = GetIp()
+    ReadOnly local_adress As IPAddress = IPAddress.Parse(ip)
 
     ' A server object will accept connection requests
-    Dim server As New TcpListener(local_adress, 80)
+    ReadOnly server As New TcpListener(local_adress, 80)
 
     ' A connection object will receive data
     Dim connection As New TcpClient
@@ -114,7 +115,7 @@ Public Class Server_Form
     Private Sub TimerConnection_Tick(sender As Object, e As EventArgs) Handles TimerConnection.Tick
         ' Display connection status
         ToolStripStatusLabel1.Text = If(connection.Connected, "Connection Established", "Not Connected")
-        ToolStripStatusLabel2.Text = If(connection.Connected, local_adress.ToString, "")
+        ToolStripStatusLabel2.Text = "IP " & local_adress.ToString & " | Port 80"
 
         ' Update button according to connection status
         If stoped Then
@@ -265,7 +266,7 @@ Public Class Server_Form
     Private Sub FastConnectToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FastConnectToolStripMenuItem.Click
         ModulePathParameters.cfg_is_valid = True
 
-        faconsrv_path = "B:\Universidade de Aveiro\Informática Industrial\Aulas_P\Aula_8\II_TP6_84400.fcs"
+        faconsrv_path = "C:\Users\fabio\OneDrive\Documentos\GitHub\II---Informatica-Industrial\Aulas_P\Aula_8\II_TP8_84400.fcs"
 
         fs.OpenProject(faconsrv_path)
         ConnectToFaconServerToolStripMenuItem.PerformClick()
@@ -276,6 +277,24 @@ Public Class Server_Form
     End Sub
 
     Private Sub AboutFastConnectToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutFastConnectToolStripMenuItem.Click
-        MsgBox("Fast connect Facon Server file path is defaulted to the file B:\Universidade de Aveiro\Informática Industrial\Aulas_P\Aula_8\II_TP6_84400.fcs")
+        MsgBox("Fast connect Facon Server file path is defaulted to C:\Users\fabio\OneDrive\Documentos\GitHub\II---Informatica-Industrial\Aulas_P\Aula_8\II_TP8_84400.fcs")
     End Sub
+
+    Public Function GetIp() As String
+        Try
+            Dim IPList As System.Net.IPHostEntry = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName)
+            Dim IP As IPAddress
+
+            For Each IP In IPList.AddressList
+                'Only return IPv4 routable IPs 
+                If (IP.AddressFamily = Sockets.AddressFamily.InterNetwork) Then
+                    Return IP.ToString
+                End If
+            Next
+            Return ""
+
+        Catch ex As Exception
+            Return ""
+        End Try
+    End Function
 End Class

@@ -6,8 +6,10 @@ Imports System.Text
 Imports System.Web
 
 Public Class Main
+    Dim ip As String = GetIp()
+
     ' The IP address of the server
-    ReadOnly ip_address As IPAddress = IPAddress.Parse("192.168.1.69")
+    Dim ip_address As IPAddress = IPAddress.Parse(ip)
 
     ' A client object will request connection requirement
     Dim client As New Sockets.TcpClient
@@ -35,6 +37,7 @@ Public Class Main
 
     Dim level As Integer
 
+    Dim dont_kill_motor As Boolean = False
 
     Private Sub Main_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
@@ -56,6 +59,10 @@ Public Class Main
         SentStripStatusLabel.Text = " "
         ToolStripStatusCompare.Text = ""
         txtbxLevel.ReadOnly = True
+
+        rbtnDefIP.CheckState = CheckState.Unchecked
+        txtbxIP.Enabled = False
+        txtbxIP.Text = ip
         ' Call the routine to disconnect (initial status should be disconnected) and update GUI
         Disconnect()
         UpdateButtonImages()
@@ -67,11 +74,16 @@ Public Class Main
         If first_time Then
             ' Try connecting
             Try
+                If rbtnDefIP.CheckState = CheckState.Checked Then
+                    ip = txtbxIP.Text
+                    ip_address = IPAddress.Parse(ip)
+                End If
+
                 client.Connect(ip_address, 80)
                 first_time = False
                 OpenPortToolStripMenuItem.Text = "Disconnect"
                 OpenPortToolStripMenuItem.BackColor = Color.Lime
-                ConnectionStatusStripLabelPort.Text = "Connected to IP " & ip_address.ToString
+                ConnectionStatusStripLabelPort.Text = "Connected to IP " & ip_address.ToString & " | Port 80"
                 TimerReceive.Enabled = True ' Start receiving
                 TimerSend.Enabled = True
                 TimerCompare.Enabled = True
@@ -80,6 +92,8 @@ Public Class Main
                 rbtnY2On.Enabled = True
                 chckbxAutoMode.AutoCheck = True
                 StatusStripLabelAutoMode.Text = "Automatic mode is off"
+                txtbxIP.Enabled = False
+                rbtnDefIP.Enabled = False
                 ' Get and display any errors that occur
             Catch ex As Exception
                 MsgBox(ex.ToString()) ' Error display
@@ -184,6 +198,18 @@ Public Class Main
         DisplayMesssages.Show()
     End Sub
 
+    ' Define IP
+    Private Sub RbtnDefIP_CheckStateChanged(sender As Object, e As EventArgs) Handles rbtnDefIP.CheckStateChanged
+        If rbtnDefIP.CheckState = CheckState.Checked Then
+            txtbxIP.Enabled = True
+
+        ElseIf rbtnDefIP.CheckState = CheckState.Unchecked Then
+            txtbxIP.Enabled = False
+            ip = GetIp()
+            txtbxIP.Text = ip
+        End If
+    End Sub
+
     'Check if automatic mode is enabled
     Private Sub ChckbxAutoMode_CheckStateChanged(sender As Object, e As EventArgs) Handles chckbxAutoMode.CheckStateChanged
         ' If not automatic mode, go back to normal
@@ -228,6 +254,14 @@ Public Class Main
         chckbxAutoMode.AutoCheck = False
         ConnectionStatusStripLabelPort.Text = "Not connected"
         StatusStripLabelAutoMode.Text = "Automatic mode is disabled"
+        rbtnDefIP.Enabled = True
+
+        If rbtnDefIP.CheckState = CheckState.Checked Then
+            txtbxIP.Enabled = True
+
+        ElseIf rbtnDefIP.CheckState = CheckState.Unchecked Then
+            txtbxIP.Enabled = False
+        End If
     End Sub
 
     ' Subroutine to update the GUI
@@ -261,35 +295,52 @@ Public Class Main
     ' Automatic mode
     '------------------------------------
     Private Sub TimerAutoMode_Tick(sender As Object, e As EventArgs) Handles TimerAutoMode.Tick
+        ' Water level and sensor verification and action according to each value
         If (X0 = 1 AndAlso level < 30) Then
             StatusStripLabelAutoMode.Text = "Warning! Water level is dangerously low!"
             Y0 = 1
             Y1 = 1
             Y2 = 0
+            dont_kill_motor = False
 
         ElseIf (X1 = 1 AndAlso (level >= 30 AndAlso level <= 75)) Then
-            StatusStripLabelAutoMode.Text = "X1 on, filling the reservoir"
-            Y0 = 1
-            Y1 = 1
-            Y2 = 1
+            If dont_kill_motor Then
+                StatusStripLabelAutoMode.Text = "X1 on, waiting for lower water level"
+                Y0 = 0
+                Y1 = 0
+                Y2 = 1
+
+            ElseIf Not dont_kill_motor Then
+                StatusStripLabelAutoMode.Text = "X1 on, filling the reservoir"
+                Y0 = 1
+                Y1 = 1
+                Y2 = 1
+            End If
 
         ElseIf (X2 = 1 AndAlso (level > 75 AndAlso level <= 90)) Then
             StatusStripLabelAutoMode.Text = "X2 on, reservoir full"
             Y0 = 0
             Y1 = 0
             Y2 = 1
+            dont_kill_motor = True
 
         ElseIf (X3 = 1 AndAlso level > 90) Then
             StatusStripLabelAutoMode.Text = "Warning! Water level too high!"
             Y0 = 0
             Y1 = 0
             Y2 = 1
+            dont_kill_motor = True
+
+            ' Errors detection
         ElseIf (X0 = 0 AndAlso level < 30) Then
             StatusStripLabelAutoMode.Text = "Error in  sensor X0 or water level sensor"
+
         ElseIf (X1 = 0 AndAlso (level >= 30 AndAlso level <= 75)) Then
             StatusStripLabelAutoMode.Text = "Error in  sensor X1 or water level sensor"
+
         ElseIf (X2 = 0 AndAlso (level > 75 AndAlso level <= 90)) Then
             StatusStripLabelAutoMode.Text = "Error in  sensor X2 or water level sensor"
+
         ElseIf (X3 = 0 AndAlso level > 90) Then
             StatusStripLabelAutoMode.Text = "Error in  sensor X3 or water level sensor"
         End If
@@ -366,4 +417,26 @@ Public Class Main
             ToolStripStatusCompare.Text = "Valves status synchronized"
         End If
     End Sub
+
+    ' Function to get IPv4 from actual connection
+    '! Here is not needed, just use a user input IP to avoid different connections IP issues
+    '! Because IP will change according to the WiFi the computer is connected to, but the Port remains the same
+    Public Function GetIp() As String
+        Return ("192.168.1.1")
+        'Try
+        '    Dim IPList As System.Net.IPHostEntry = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName)
+        '    Dim IP As IPAddress
+        '    For Each IP In IPList.AddressList
+        '        'Only return IPv4 routable IPs 
+        '        If (IP.AddressFamily = Sockets.AddressFamily.InterNetwork) Then
+        '            Return IP.ToString
+        '        End If
+        '    Next
+
+        '    Return ""
+
+        'Catch ex As Exception
+        '    Return ""
+        'End Try
+    End Function
 End Class

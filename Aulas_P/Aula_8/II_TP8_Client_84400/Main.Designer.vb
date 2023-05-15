@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class Main
     Inherits System.Windows.Forms.Form
 
     'Descartar substituições de formulário para limpar a lista de componentes.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class Main
     'OBSERVAÇÃO: o procedimento a seguir é exigido pelo Windows Form Designer
     'Pode ser modificado usando o Windows Form Designer.  
     'Não o modifique usando o editor de códigos.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Main))
@@ -41,6 +41,7 @@ Partial Class Main
         Me.StatusStripLabelAutoMode = New System.Windows.Forms.ToolStripStatusLabel()
         Me.StatusStripLabelWarnings = New System.Windows.Forms.ToolStripStatusLabel()
         Me.SentStripStatusLabel = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ToolStripStatusCompare = New System.Windows.Forms.ToolStripStatusLabel()
         Me.TimerAutoMode = New System.Windows.Forms.Timer(Me.components)
         Me.TimerReceive = New System.Windows.Forms.Timer(Me.components)
         Me.SerialPort = New System.IO.Ports.SerialPort(Me.components)
@@ -63,8 +64,9 @@ Partial Class Main
         Me.rbtnX1 = New System.Windows.Forms.CheckBox()
         Me.rbtnX2 = New System.Windows.Forms.CheckBox()
         Me.rbtnX3 = New System.Windows.Forms.CheckBox()
-        Me.ToolStripStatusCompare = New System.Windows.Forms.ToolStripStatusLabel()
         Me.TimerCompare = New System.Windows.Forms.Timer(Me.components)
+        Me.rbtnDefIP = New System.Windows.Forms.CheckBox()
+        Me.txtbxIP = New System.Windows.Forms.TextBox()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip.SuspendLayout()
         Me.ConnectionStatusStrip.SuspendLayout()
@@ -200,6 +202,12 @@ Partial Class Main
         Me.SentStripStatusLabel.Name = "SentStripStatusLabel"
         Me.SentStripStatusLabel.Size = New System.Drawing.Size(145, 20)
         Me.SentStripStatusLabel.Text = "SentStripStatusLabel"
+        '
+        'ToolStripStatusCompare
+        '
+        Me.ToolStripStatusCompare.Name = "ToolStripStatusCompare"
+        Me.ToolStripStatusCompare.Size = New System.Drawing.Size(153, 20)
+        Me.ToolStripStatusCompare.Text = "ToolStripStatusLabel1"
         '
         'TimerAutoMode
         '
@@ -405,17 +413,35 @@ Partial Class Main
         Me.rbtnX3.Text = "X3"
         Me.rbtnX3.UseVisualStyleBackColor = True
         '
-        'ToolStripStatusCompare
+        'TimerCompare
         '
-        Me.ToolStripStatusCompare.Name = "ToolStripStatusCompare"
-        Me.ToolStripStatusCompare.Size = New System.Drawing.Size(153, 20)
-        Me.ToolStripStatusCompare.Text = "ToolStripStatusLabel1"
+        '
+        'rbtnDefIP
+        '
+        Me.rbtnDefIP.AutoSize = True
+        Me.rbtnDefIP.Location = New System.Drawing.Point(811, 45)
+        Me.rbtnDefIP.Margin = New System.Windows.Forms.Padding(4)
+        Me.rbtnDefIP.Name = "rbtnDefIP"
+        Me.rbtnDefIP.Size = New System.Drawing.Size(126, 20)
+        Me.rbtnDefIP.TabIndex = 43
+        Me.rbtnDefIP.Text = "Define Server IP"
+        Me.rbtnDefIP.UseVisualStyleBackColor = True
+        '
+        'txtbxIP
+        '
+        Me.txtbxIP.Location = New System.Drawing.Point(811, 71)
+        Me.txtbxIP.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.txtbxIP.Name = "txtbxIP"
+        Me.txtbxIP.Size = New System.Drawing.Size(151, 22)
+        Me.txtbxIP.TabIndex = 44
         '
         'Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(992, 498)
+        Me.Controls.Add(Me.txtbxIP)
+        Me.Controls.Add(Me.rbtnDefIP)
         Me.Controls.Add(Me.rbtnX3)
         Me.Controls.Add(Me.rbtnX2)
         Me.Controls.Add(Me.rbtnX1)
@@ -503,4 +529,6 @@ Partial Class Main
     Friend WithEvents OpenPortToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripStatusCompare As ToolStripStatusLabel
     Friend WithEvents TimerCompare As Timer
+    Friend WithEvents rbtnDefIP As CheckBox
+    Friend WithEvents txtbxIP As TextBox
 End Class
