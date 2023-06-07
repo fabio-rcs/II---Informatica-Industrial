@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<script>
+		setInterval(function() {
+		  var xhttp = new XMLHttpRequest();
+		  xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			  document.getElementById("sensors").innerHTML = this.responseText;
+			}
+		  };
+		  xhttp.open("GET", "Supervision.html", true);
+		  xhttp.send();
+		}, 1000);
+	</script>
+	
+	<div id="sensors">
+	
+		<head>
+			<p style = "color: red; font-weight:bold; font-size:28px">
+				SUPERVISION
+			</p> 
+		</head>
+		
+		<body>
+			<hr></hr>
+			<p style = "font-size:24px"> <strong>Inputs</strong></p>
+			<p> <strong>X0:</strong> X0_Value </p>
+			<p> <strong>X1:</strong> X1_Value </p>
+			<p> <strong>X2:</strong> X2_Value </p>
+			<p> <strong>X3:</strong> X3_Value </p>
+			<p> <strong>Water Level:</strong> Water_Level </p>
+			<hr></hr>
+			<p style = "font-size:24px"> <strong>Outputs</strong></p>
+			<p> <strong>Y0:</strong> Y0_Value</p>
+			<p> <strong>Y1:</strong> Y1_Value</p>
+			<p> <strong>Y2:</strong> Y2_Value</p>
+		</body>
+	</div>
+</html>
